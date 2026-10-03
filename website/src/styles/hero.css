@@ -1,0 +1,391 @@
+/* ---------- The scroll-scrubbed hero ---------- */
+.hero-scrub { position: relative; }
+/* Everything the film shows lives in .stage-film so the exit can scale it as one piece. */
+.stage, .hero-static { color: var(--text-primary); } /* dark scope: inherit light text, not the cream page's charcoal */
+.stage-film { position: absolute; inset: 0; overflow: hidden; transform-origin: 50% 30%; will-change: transform; }
+.stage-dim { position: absolute; inset: 0; background: #07080a; opacity: 0; pointer-events: none; }
+/* On phones the coach section overlaps the poster hero as a rounded cream card too. */
+.hero-static + .naseeb {
+  margin-top: -28px;
+  z-index: 3;
+  background-color: var(--canvas);
+  border-radius: 28px 28px 0 0;
+}
+/* Ghost buttons over footage stay light. */
+.stage .btn-ghost, .hero-static .btn-ghost { color: #f4eee3; border-color: rgba(244, 238, 227, 0.45); background: rgba(20, 18, 15, 0.35); }
+/* The coach section rides up over the resting final frame. */
+.hero-scrub + .naseeb {
+  margin-top: -100vh;
+  margin-top: -100svh;
+  z-index: 3;
+  background-color: var(--canvas);
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 -30px 80px -10px rgba(0, 0, 0, 0.55), 0 -1px 0 rgba(200, 144, 46, 0.3);
+}
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--canvas);
+}
+.poster,
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  background-size: cover;
+  background-position: 50% 40%;
+}
+.poster { transition: background-image 0.6s var(--ease-out); }
+.hero-video {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out);
+  transform: translateZ(0);
+  will-change: transform;
+}
+.video-ready .hero-video { opacity: 1; }
+
+/* Layer 1: the global base scrim, always on. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 45%, rgba(10, 10, 14, 0) 35%, rgba(10, 10, 14, 0.62) 100%),
+    linear-gradient(to bottom, rgba(10, 10, 14, 0.55), rgba(10, 10, 14, 0) 18%);
+}
+
+/* ---------- Bands ---------- */
+.band {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  padding: 120px var(--gutter) 96px;
+  pointer-events: none;
+  opacity: 0;
+  text-shadow: var(--tshadow);
+  --k: 0;
+}
+.band.is-active { pointer-events: auto; }
+.band .btn { text-shadow: none; }
+
+/* Layer 2: a per-band scrim that rides the band's opacity and deepens with --k. */
+.band::before {
+  content: '';
+  position: absolute;
+  inset: -4%;
+  pointer-events: none;
+  opacity: calc(0.25 + 0.75 * var(--k, 1));
+  /* warm dark (not blue-black) so it sits naturally on the sunny cartoon footage; the plateau
+     reaches further out because that footage is much brighter than the old film */
+  background: radial-gradient(var(--scrim-shape, ellipse 60% 55% at 30% 70%), rgba(22, 15, 8, var(--scrim-a, 0.66)) 0%, rgba(22, 15, 8, calc(var(--scrim-a, 0.66) * var(--scrim-mid, 0.66))) 56%, rgba(22, 15, 8, 0) 88%);
+}
+.band-inner { position: relative; max-width: min(720px, 92vw); }
+
+/* The summit opens over sunlit snow, the brightest footage in the film: a deeper, flatter scrim. */
+.band-left-low { align-items: flex-end; justify-content: flex-start; --scrim-shape: ellipse 64% 64% at 16% 86%; --scrim-a: 0.92; --scrim-mid: 0.94; }
+.band-left-low .band-title { font-size: clamp(46px, 6.2vw, 104px); }
+.band-left-low { padding-bottom: clamp(64px, 11vh, 120px); }
+.band-center { align-items: center; justify-content: center; text-align: center; --scrim-shape: ellipse 58% 50% at 50% 46%; --scrim-a: 0.88; --scrim-mid: 0.85; }
+.band-center .band-inner { max-width: 900px; }
+.band-left { align-items: center; justify-content: flex-start; --scrim-shape: ellipse 62% 78% at 16% 54%; --scrim-a: 0.95; --scrim-mid: 0.95; }
+
+.band-kicker {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  /* Layer 4: a chip scrim for small text over footage. */
+  background: rgba(8, 8, 12, 0.68);
+  border: 1px solid rgba(217, 164, 65, 0.35);
+  text-shadow: 0 1px 3px rgba(5, 5, 9, 0.85);
+  opacity: var(--k);
+  transform: translateY(calc((1 - var(--k)) * 10px));
+}
+.band-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  font-size: clamp(52px, 8.4vw, 132px);
+  color: var(--text-primary);
+}
+.band-sub {
+  margin-top: 22px;
+  font-size: clamp(17px, 1.5vw, 22px);
+  color: rgba(236, 231, 223, 0.86);
+  opacity: clamp(0, (var(--k) - 0.55) * 3, 1);
+  transform: translateY(calc((1 - clamp(0, (var(--k) - 0.55) * 3, 1)) * 14px));
+}
+
+/* Characters and words: shared parts of the split. */
+.split .w { display: inline-block; white-space: nowrap; }
+.split .c { display: inline-block; } /* no will-change: one GPU layer per letter costs more than it saves */
+
+/* (a) blur to sharp: mist clearing over the summit. Opacity only, blur stays static. */
+.blur-stack { display: grid; }
+.blur-stack > span { grid-area: 1 / 1; }
+.blur-stack .soft { filter: blur(12px); opacity: calc(1 - var(--k)); }
+.blur-stack .sharp { opacity: var(--k); }
+
+/* (f) drift down: words fall into place as the camera drops into the clouds. */
+.fx-drift .w {
+  --kc: clamp(0, (var(--k) - var(--th)) * 2.4, 1);
+  opacity: var(--kc);
+  transform: translateY(calc((1 - var(--kc)) * -0.55em));
+}
+.fx-drift .w.em { color: var(--hero-gold); }
+
+/* (b) grid snap: characters slide in, in reading order, as the glide begins. */
+.fx-snap .c {
+  --kc: clamp(0, (var(--k) - var(--th)) * 2.8, 1);
+  opacity: var(--kc);
+  transform: translateX(calc((1 - var(--kc)) * var(--jx)));
+}
+
+/* (d) word punch with overshoot: the champion lands. */
+.fx-punch .w {
+  --kc: clamp(0, (var(--k) - var(--th)) * 3, 1);
+  --ks: clamp(0, (var(--k) - var(--th) - var(--sd, 0.1)) * var(--ss, 3.2), 1);
+  opacity: var(--kc);
+  transform: scale(calc(0.6 + (0.4 + var(--ov, 0.12)) * var(--kc) - var(--ov, 0.12) * var(--ks)));
+}
+.fx-punch .w.em { --ov: 0.24; --sd: 0.16; --ss: 2.6; color: var(--hero-gold); }
+
+/* (e) the settle: the bar waits, Naseeb arrives beside it, the text column rises on the left. */
+.band-split {
+  /* Low on the left, over the dark machines, clear of the bright LED ceiling. */
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-top: 110px;
+  padding-bottom: clamp(40px, 7vh, 88px);
+  --scrim-shape: ellipse 52% 72% at 14% 72%;
+  --scrim-a: 0.93;
+  --scrim-mid: 0.92;
+}
+.settle-col { position: relative; max-width: min(520px, 38vw); }
+.settle-title {
+  font-family: var(--f-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.86;
+  font-size: clamp(60px, 7.4vw, 132px);
+  color: var(--text-primary);
+}
+.settle-title .w {
+  --kc: clamp(0, (var(--k) - var(--th)) * 2.4, 1);
+  opacity: var(--kc);
+  transform: translateY(calc((1 - var(--kc)) * 0.5em));
+}
+.settle-title .w:last-child { color: var(--hero-gold); }
+.settle-by,
+.settle-sub,
+.settle-meta { --ks: clamp(0, (var(--k) - 0.5) * 4, 1); opacity: var(--ks); }
+.settle-by {
+  margin-top: 14px;
+  font-size: 14px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+.settle-sub {
+  margin-top: 26px;
+  font-family: var(--f-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: clamp(24px, 2.2vw, 36px);
+  line-height: 1;
+  transform: translateY(calc((1 - var(--ks)) * 16px));
+}
+.settle-meta {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--hero-gold);
+}
+.settle-cta {
+  --kb: clamp(0, (var(--k) - 0.75) * 5, 1);
+  margin-top: 26px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  opacity: var(--kb);
+  transform: translateY(calc((1 - var(--kb)) * 14px));
+}
+
+/* ---------- Loading ring and scroll cue ---------- */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  pointer-events: none;
+  transition: opacity 0.6s var(--ease-out);
+}
+.ring { width: 36px; height: 36px; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 2.5; }
+.ring-track { stroke: rgba(236, 231, 223, 0.18); }
+.ring-fill {
+  stroke: var(--accent);
+  stroke-dasharray: 126;
+  stroke-dashoffset: var(--ld, 126);
+  transition: stroke-dashoffset 0.15s linear;
+}
+.chevron {
+  display: none;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 1.6;
+  animation: nudge 2.4s var(--ease-io) infinite;
+}
+.stage.is-end .scroll-cue { opacity: 0; }
+.video-ready .ring,
+.video-failed .ring { display: none; }
+.video-ready .chevron,
+.video-failed .chevron { display: block; }
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* ---------- Static hero: phones, reduced motion ---------- */
+.hero-static {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+.static-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+  background-size: cover;
+  background-position: 50% 30%;
+}
+.static-scrim {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(10, 10, 14, 0.5) 0%, rgba(10, 10, 14, 0) 22%, rgba(10, 10, 14, 0) 42%, rgba(10, 10, 14, 0.88) 78%, var(--canvas) 100%);
+}
+.static-copy {
+  position: relative;
+  z-index: 2;
+  padding: 0 var(--gutter) 48px;
+  text-shadow: var(--tshadow);
+  width: 100%;
+}
+.static-copy .band-kicker { opacity: 1; transform: none; }
+.static-title {
+  font-family: var(--f-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(64px, 18vw, 120px);
+  line-height: 0.86;
+}
+.static-by {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  letter-spacing: 0.32em;
+  color: var(--accent);
+}
+.static-sub { margin-top: 16px; font-size: 17px; max-width: 34ch; color: rgba(236, 231, 223, 0.88); }
+.static-copy .settle-cta { justify-content: flex-start; opacity: 1; transform: none; }
+
+@media (max-width: 1100px) {
+  .settle-col { max-width: 40vw; }
+}
+@media (max-height: 700px) {
+  .band { padding-top: 96px; padding-bottom: 72px; }
+  .band-title { font-size: clamp(44px, 7vw, 100px); }
+}
+
+/* Keep side captions in their own lane: narrow enough to wrap before the bright
+   mirror column and before Naseeb on every laptop width. */
+.band-left .band-inner,
+.band-left-low .band-inner { max-width: min(600px, 42vw); }
+.band-left .band-title { font-size: clamp(48px, 7vw, 120px); }
+
+/* Short laptop screens (e.g. 1463x700 at 175% scaling): keep the final column low,
+   over the dark machines, instead of reaching up into the bright LED ceiling. */
+@media (max-height: 780px) {
+  .settle-title { font-size: clamp(46px, min(7vw, 12.5vh), 104px); }
+  .settle-by { margin-top: 10px; }
+  .settle-sub { margin-top: 14px; font-size: clamp(20px, min(2vw, 4.4vh), 32px); }
+  .settle-cta { margin-top: 16px; }
+  .band-split { padding-bottom: 28px; --scrim-shape: ellipse 50% 60% at 15% 76%; --scrim-a: 0.92; }
+  .band-left-low { padding-bottom: 40px; --scrim-shape: ellipse 60% 70% at 14% 88%; --scrim-a: 0.94; --scrim-mid: 0.94; }
+  .band-left-low .band-title { font-size: clamp(40px, min(5.6vw, 10.5vh), 92px); }
+}
+
+
+/* ---------- Phone hero: the journey uncropped in a cinematic card ---------- */
+.hero-card {
+  position: relative;
+  height: auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 26px;
+  padding: 92px 16px 64px;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 18%, rgba(217, 164, 65, 0.16), transparent 70%),
+    var(--canvas);
+  overflow: hidden;
+}
+.card-glow {
+  position: absolute; left: 50%; top: 22%; width: 120%; aspect-ratio: 1; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 176, 74, 0.22), transparent 60%);
+  pointer-events: none;
+}
+.card-film {
+  position: relative;
+  margin: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #2a2622 url('/assets/hero-card-poster.jpg') center / cover;
+  box-shadow: 0 0 0 1px rgba(245, 212, 138, 0.28), 0 28px 60px -24px rgba(0, 0, 0, 0.85), 0 0 60px -20px rgba(255, 168, 64, 0.35);
+  animation: cardIn 0.9s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.card-film video, .card-film img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.card-tag {
+  position: absolute; left: 10px; bottom: 10px;
+  padding: 5px 9px; border-radius: 999px;
+  font-size: 9px; letter-spacing: 0.2em; color: #f4eee3;
+  background: rgba(18, 13, 8, 0.6);
+}
+.card-copy { position: relative; animation: cardIn 0.9s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.card-copy .band-kicker { opacity: 1; transform: none; }
+.card-copy .static-title { font-size: clamp(56px, 16vw, 84px); }
+.card-copy .settle-cta { justify-content: flex-start; opacity: 1; transform: none; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(18px) scale(0.98); } to { opacity: 1; transform: none; } }
+@media (min-width: 560px) {
+  .hero-card { padding-left: max(24px, 8vw); padding-right: max(24px, 8vw); }
+}
