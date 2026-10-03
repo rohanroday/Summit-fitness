@@ -1,0 +1,68 @@
+:root {
+  /* Warm cream + gold: a sunlit boutique gym. */
+  --canvas: #f6f1e7;
+  --canvas-2: #efe7d8;
+  --panel: #ffffff;
+  --panel-2: #fbf7f0;
+  --line: rgba(28, 26, 23, 0.1);
+  --line-strong: rgba(28, 26, 23, 0.2);
+  --accent: #c8902e;
+  --accent-hover: #d9a441;
+  --accent-deep: #9a6a22;
+  --accent-text: #8e6118; /* gold for small text on cream (about 5:1) */
+  --hero-gold: #f5d48a; /* lighter gold for words over footage */
+  --accent-muted: rgba(200, 144, 46, 0.2);
+  --amber: #ff9f3a;
+  --ice: #6d8296;
+  --text-primary: #1c1a17;
+  --text-secondary: #6b635a;
+  --ink: #1c1a17;
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 18px 44px -26px rgba(70, 45, 10, 0.35), 0 2px 8px -4px rgba(70, 45, 10, 0.12);
+  --shadow-lift: 0 30px 60px -30px rgba(70, 45, 10, 0.45), 0 0 0 1px rgba(200, 144, 46, 0.35);
+  --logo-grad: linear-gradient(180deg, #d9a441, #8e6118);
+
+  --f-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --f-body: 'Manrope', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --radius: 14px;
+  --wrap: 1240px;
+  --gutter: clamp(16px, 4vw, 48px);
+
+  --tshadow: 0 1px 2px rgba(5, 5, 8, 0.95), 0 3px 12px rgba(5, 5, 8, 0.78), 0 10px 44px rgba(5, 5, 8, 0.8);
+  color-scheme: light;
+}
+
+/* Dark scope: the film, the free-trial band, the footer and the finder's photo panel.
+   They redefine the same tokens, so every component reads correctly wherever it sits. */
+.stage,
+.hero-static,
+.trial,
+.footer,
+.finder-result,
+.nav.is-film {
+  --canvas: #1c1a17;
+  --canvas-2: #24211d;
+  --panel: #2a2622;
+  --panel-2: #322d28;
+  --line: rgba(244, 238, 227, 0.1);
+  --line-strong: rgba(244, 238, 227, 0.22);
+  --accent: #d9a441;
+  --accent-text: #e3b45a;
+  --accent-muted: rgba(217, 164, 65, 0.18);
+  --text-primary: #f4eee3;
+  --text-secondary: #b3aa9e;
+  --shadow-card: 0 0 0 1px rgba(244, 238, 227, 0.08), 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  --logo-grad: linear-gradient(180deg, #f7d98b, #c8902e);
+  color-scheme: dark;
+}
+/* The phone menu always opens as a cream panel, even over the film. */
+.nav.is-open {
+  --canvas: #f6f1e7;
+  --text-primary: #1c1a17;
+  --text-secondary: #6b635a;
+  --accent-text: #8e6118;
+  --logo-grad: linear-gradient(180deg, #d9a441, #8e6118);
+}
