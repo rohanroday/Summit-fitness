@@ -650,8 +650,11 @@ main, .footer { position: relative; z-index: 2; }
 }
 @media (max-width: 767px) {
   .altimeter { display: none; }
-  .logo-sub { display: none; }
-  .logo-name { font-size: 20px; }
+  /* phones show the full lockup too: SUMMIT / FITNESS · BY NASEEB */
+  .logo { gap: 9px; }
+  .logo svg { width: 34px; height: auto; }
+  .logo-name { font-size: 19px; }
+  .logo-sub { font-size: 7.5px; letter-spacing: 0.2em; margin-top: 3px; }
   .stats { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
   .stat-label { font-size: 12px; }
   .program-grid, .plans { grid-template-columns: 1fr; }
@@ -687,11 +690,6 @@ html.is-intro, html.is-intro body { overflow: hidden; }
   --text-primary: #1c1a17;
 }
 .intro-lockup .logo-sub > span { display: inline-block; white-space: pre; }
-@media (max-width: 767px) {
-  /* the navbar hides this line on phones; in the splash it hangs below without changing the logo's size */
-  .intro-lockup .logo-words { position: relative; }
-  .intro-lockup .logo-sub { display: block; position: absolute; top: 100%; left: 0; margin-top: 3px; }
-}
 .intro-lockup svg path { stroke: #c8902e; stroke-width: 1.1; stroke-linejoin: round; }
 .intro-sign {
   position: fixed; left: 50%; top: calc(44vh + 60px); transform: translateX(-50%);
@@ -795,3 +793,6 @@ html.is-intro, html.is-intro body { overflow: hidden; }
   .stat-num { font-size: clamp(30px, 9vw, 40px); }
   .stat-label { line-height: 1.4; }
 }
+/* very narrow phones: the full logo lockup needs the room, so the CTA drops its icon */
+.nav-cta .wa-ico { flex: none; }
+@media (max-width: 379px) { .nav-cta .wa-ico { display: none; } .nav-cta { padding-left: 14px; } }
